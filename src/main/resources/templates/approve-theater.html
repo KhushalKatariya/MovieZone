@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <title>Approve Theater</title>
+    <link rel="stylesheet" href="/css/approve.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+</head>
+<body>
+    <th:block th:insert="~{fragments/navbar}"></th:block>
+
+    <main class="container">
+        <h1>Approve Theaters</h1>
+        <div class="theater-grid">
+            <div th:each="theater : ${list}" class="theater-card">
+                <h2 th:text="${theater.name}"></h2>
+                <p><strong>Address:</strong> <span th:text="${theater.address}"></span></p>
+                <p><strong>License Number:</strong> <span th:text="${theater.licenceno}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${theater.approved}" class="status"></span></p>
+                <a th:href="'/admin/approve-theater/'+${theater.id}" class="approve-btn">Approve</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+ 

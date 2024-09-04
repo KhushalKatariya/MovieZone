@@ -1,0 +1,39 @@
+html, body {
+	position: relative;
+	height: 100%;
+}
+
+.swiper {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	text-align: center;
+	font-size: 18px;
+	background: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.swiper-slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* CUSTOM CSS */
+.poster img {
+    width: 70rem;
+    height: 40rem;
+    margin: 0 auto;
+}
+
+.movie-details {
+    position: relative;
+    bottom: 12rem;
+    left: 20rem;
+    color: white;
+}

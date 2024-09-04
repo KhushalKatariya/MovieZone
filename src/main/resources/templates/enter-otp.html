@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/header.html}"></th:block>
+    <title>OTP Page</title>
+    <link rel="stylesheet" href="/css/otp.css">
+</head>
+<body>
+    <div class="container">
+        <th:block th:insert="~{fragments/message.html}"></th:block>
+        <h1>OTP Verification</h1>
+        <form th:action="'/'+${user}+'/verify-otp'" method="post" class="otp-form">
+            <input type="hidden" name="id" th:value="${session.id}">
+            <div class="form-group">
+                <label for="otp">Enter OTP here</label>
+                <input type="text" name="otp" id="otp" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

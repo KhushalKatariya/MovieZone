@@ -1,0 +1,33 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* NAVBAR CSS */
+body {
+	background-color: #141414;
+	height: 100vh;
+}
+
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	width: 90%;
+	margin: 1% auto;
+}
+
+.navbar-brand, .nav-link {
+	color: white;
+	transition: 0.2s;
+}
+.navbar-brand:hover{
+	color: #e50914;
+}
+
+/* FOOTER CSS */
+
+footer{
+	display: flex;
+	align-items: flex-end;
+}

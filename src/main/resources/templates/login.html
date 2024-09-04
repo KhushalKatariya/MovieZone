@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<th:block th:insert="~{fragments/header.html}"></th:block>
+<title>Login Page</title>
+	<link rel="stylesheet" type="text/css" href="/css/customer-signup.css">
+</head>
+<body>
+
+	<th:block th:insert="~{fragments/navbar}"></th:block>
+	<th:block th:insert="~{fragments/message}"></th:block>
+
+	<h2>Login</h2>
+	<form class="row g-3" action="/login" method="post">
+		<div class="col-md-4">
+			<div class="form-input">
+				<label for="validationDefault02" class="form-label">Mobile / Email</label> 
+				<input type="tel" name="emph" class="form-control" id="validationDefault02" />
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-input">
+				<label for="validationDefault03" class="form-label">Password</label>
+				<input type="password" name="pass" class="form-control" id="validationDefault03" />
+			</div>
+		</div>
+		<div class="col-12 btn">
+			<button class="btn btn-primary">Login</button>
+			<button class="btn btn-danger" type="reset">Reset</button>
+		</div>
+		<div class="add-link">
+			<label>If you Don't Have Customer Account ?</label> 
+			<a href="/customer/signup">Click Here</a>
+			<label>If you Don't Have Theater Account ?</label> 
+			<a href="/theater/signup">Click Here</a>
+		</div>
+	</form>
+</body>
+</html>

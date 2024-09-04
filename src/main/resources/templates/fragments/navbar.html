@@ -1,0 +1,34 @@
+<nav class="navbar">
+	<div class="left-nav">
+		<a class="navbar-brand" href="/">MovieZone</a>
+	</div>
+	<div class="right-nav" id="navbarNavAltMarkup">
+		<div class="nav">
+			<a class="nav-link" href="/">Home</a> 
+			
+			<th:block th:if="${session.admin == null && session.customer == null && session.theater == null}">			
+				<a class="nav-link" href="/customer/signup">Register</a> 
+				<a class="nav-link" href="/login">Login</a> 
+			</th:block>
+			
+			<th:block th:if="${session.admin}">
+				<a class="nav-link" href="/admin/approve-theater">Approve Theater</a>
+				<a class="nav-link" href="/admin/add-movie">Add Movie</a> 
+			</th:block>
+			
+			<th:block th:if="${session.customer}">
+				<a class="nav-link" href="/login">Movies</a> 
+			<a class="nav-link" href="/customer/history">History</a> 
+			</th:block>
+			
+			<th:block th:if="${session.theater}">
+			<a class="nav-link" href="/theater/add-movie">Add Movies</a> 
+			<a class="nav-link" href="/theater/dashboard">Movie Dashboard</a>
+			</th:block>
+			
+			<th:block th:if="${session.admin != null || session.customer != null || session.theater != null}">
+				<a class="nav-link" href="/logout">Logout</a> 
+			</th:block>	
+		</div>
+	</div>
+</nav>

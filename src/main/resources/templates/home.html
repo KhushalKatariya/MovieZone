@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- BOOTSTRAP -->
+<th:block th:insert="~{fragments/header.html}"></th:block>
+
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+<link rel="stylesheet" type="text/css" href="/css/slider.css">
+<!-- Link Swiper's CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+
+<title>MovieZone - Home Page</title>
+</head>
+<body>
+	<th:block th:insert="~{fragments/navbar}"></th:block>
+	<th:block th:insert="~{fragments/message}"></th:block>
+
+	<section>
+		<div class="swiper mySwiper">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide">
+					<div class="poster">
+						<div class="poster-img">
+							<img alt=""
+								src="https://images.ottplay.com/images/big/stree-2-new-poster-1721216275.jpeg?impolicy=ottplay-20210210&width=1200&height=675&format=webp&quality=50" />
+						</div>
+						<div class="movie-details">
+							<h2>Stree 2</h2>
+							<h3>Rajkumar Rao, Shardha Kapoor</h3>
+							<h3>Comedy, Horror</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="poster">
+						<div class="poster-img">
+							<img alt=""
+								src="https://d3pc1xvrcw35tl.cloudfront.net/sm/images/1260x945/akshay-kumar-movie-khel-khel-mein-motion-poster-out-taapsee-pannu-and-fardeen-khan_202407295920.jpg" />
+						</div>
+						<div class="movie-details">
+							<h2>Khel Khel Mein</h2>
+							<h3>Vani Kapoor</h3>
+							<h3>Comedy, Drama</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="poster">
+						<div class="poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/iedb/movies/images/mobile/listing/xxlarge/vedaa-et00386426-1723550870.jpg" />
+						</div>
+						<div class="movie-details">
+							<h2>Vedaa</h2>
+							<h3>Jhon Abraheam</h3>
+							<h3>Action, Drama</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="poster">
+						<div class="poster-img">
+							<img alt=""
+								src="https://liveindia.tv/wp-content/uploads/2024/07/Big-B-1.jpg" />
+						</div>
+						<div class="movie-details">
+							<h2>Fakt Purusho Mate</h2>
+							<h3>Amitabh Bachhan</h3>
+							<h3>Comedy, Drama</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+		</div>
+	</section>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+	<script type="text/javascript">
+		var swiper = new Swiper(".mySwiper", {
+			loop : true,
+			spaceBetween : 30,
+			navigation : {
+				nextEl : ".swiper-button-next",
+				prevEl : ".swiper-button-prev",
+			},
+		});
+	</script>
+</body>
+</html>
