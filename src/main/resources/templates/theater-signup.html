@@ -8,7 +8,7 @@
 <body>
 	<th:block th:insert="~{fragments/navbar}"></th:block>
 	<h2>Theater Registration</h2>
-	<form class="row g-3" action="/theater/signup" method="post" th:object="${theater}">
+	<form class="row g-3" action="/theater/signup" method="post" th:object="${theater}" autocomplete="on">
 		<div class="col-md-4">
 			<div class="form-input">
 				<label for="validationDefault01" class="form-label">Name</label> 

@@ -1,6 +1,5 @@
 package com.khushal.moviezone.controller;
 
-import java.security.DrbgParameters.NextBytes;
 import java.util.List;
 import java.util.Random;
 
@@ -12,12 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.khushal.moviezone.dto.Customer;
+import com.khushal.moviezone.dto.Movie;
 import com.khushal.moviezone.dto.Theater;
 import com.khushal.moviezone.helper.AES;
+import com.khushal.moviezone.helper.CloudinaryHelper;
 import com.khushal.moviezone.helper.EmailSendingHelper;
 import com.khushal.moviezone.repository.CustomerRepository;
+import com.khushal.moviezone.repository.MovieRepository;
 import com.khushal.moviezone.repository.TheaterRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +32,12 @@ public class GeneralController {
 	CustomerRepository customerRepository;
 	@Autowired
 	TheaterRepository theaterRepository;
-
+	@Autowired
+	MovieRepository movieRepository;
+	
+	@Autowired
+	CloudinaryHelper cloudinaryHelper;
+	
 	@Autowired
 	EmailSendingHelper emailSendingHelper;
 
@@ -109,7 +117,7 @@ public class GeneralController {
 		} catch (NumberFormatException e) {
 			String email = emph;
 
-			if (email.equals(adminUser) && password.equals(password)) {
+			if (email.equals(adminUser) && password.equals(pass)) {
 				session.setAttribute("success", "Login Success as Admin");
 				session.setAttribute("admin", "admin");
 				return "redirect:/";
@@ -125,7 +133,7 @@ public class GeneralController {
 						if (AES.decrypt(customer.getPass(), "123").equals(pass)) {
 							if (customer.isVerified()) {
 								session.setAttribute("success", "Login Success as Customer");
-								session.setAttribute("customer", "customer");
+								session.setAttribute("customer", customer);
 								return "redirect:/";
 							} else {
 								customer.setOtp(new Random().nextInt(100000, 1000000));
@@ -144,7 +152,7 @@ public class GeneralController {
 							if (theater.isVerified()) {
 								if (theater.isApproved()) {
 									session.setAttribute("success", "Login Successfully as Thater");
-									session.setAttribute("theater", "theater");
+									session.setAttribute("theater", theater);
 									return "redirect:/";
 								} else {
 									session.setAttribute("failure",
@@ -216,6 +224,21 @@ public class GeneralController {
 			return "add-movie";
 		} else {
 			session.setAttribute("failure", "Invalid Session, Login again");
+			return "redirect:/login";
+		}
+	}
+	
+	@PostMapping("/admin/add-movie")
+	public String addMovie(HttpSession session, Movie movie,@RequestParam MultipartFile image) {
+		if(session.getAttribute("admin") != null) {
+			movie.setMoviePoster(cloudinaryHelper.saveMoviePosterToCloud(image));
+			movieRepository.save(movie);
+			System.out.println(movie);
+			session.setAttribute("success", "Movie Add Successfully");
+			return "redirect:/";
+		}
+		else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
 			return "redirect:/login";
 		}
 	}

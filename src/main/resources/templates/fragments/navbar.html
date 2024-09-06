@@ -22,8 +22,10 @@
 			</th:block>
 			
 			<th:block th:if="${session.theater}">
-			<a class="nav-link" href="/theater/add-movie">Add Movies</a> 
-			<a class="nav-link" href="/theater/dashboard">Movie Dashboard</a>
+			<a class="nav-link" href="/theater/add-screen">Add Screen</a> 
+			<a class="nav-link" href="/theater/add-show">Add Show</a>
+			<a class="nav-link" href="/theater/manage-show">Manage Show</a>
+			<a class="nav-link" href="/theater/manage-screen">Manage Screen</a>
 			</th:block>
 			
 			<th:block th:if="${session.admin != null || session.customer != null || session.theater != null}">

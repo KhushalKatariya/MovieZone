@@ -1,5 +1,7 @@
 package com.khushal.moviezone.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.khushal.moviezone.dto.Movie;
+import com.khushal.moviezone.dto.Screen;
+import com.khushal.moviezone.dto.Seat;
+import com.khushal.moviezone.dto.Show;
 import com.khushal.moviezone.dto.Theater;
 import com.khushal.moviezone.helper.AES;
 import com.khushal.moviezone.helper.EmailSendingHelper;
 import com.khushal.moviezone.repository.CustomerRepository;
+import com.khushal.moviezone.repository.MovieRepository;
+import com.khushal.moviezone.repository.ScreenRepository;
+import com.khushal.moviezone.repository.ShowRepository;
 import com.khushal.moviezone.repository.TheaterRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,43 +35,50 @@ public class TheaterController {
 
 	@Autowired
 	Theater theater;
-	
+
 	@Autowired
 	EmailSendingHelper emailSendingHelper;
-	
+
 	@Autowired
 	CustomerRepository customerRepository;
 	@Autowired
 	TheaterRepository theaterRepository;
-	
+	@Autowired
+	ScreenRepository screenRepository;
+	@Autowired
+	MovieRepository movieRepository;
+	@Autowired
+	ShowRepository showRepository;
+
 //	FOR CUSTOMER REGISTRATION
-	
+
 	@GetMapping("/signup")
 	public String theaterRegistration(ModelMap map) {
 		map.put("theater", theater);
 		return "theater-signup";
 	}
-	
+
 	@PostMapping("/signup")
-	public String createRegistration(@Valid Theater theater, BindingResult result, HttpSession session ) {
-		if(!theater.getPass().equals(theater.getCnfPass())) {
+	public String createRegistration(@Valid Theater theater, BindingResult result, HttpSession session) {
+		if (!theater.getPass().equals(theater.getCnfPass())) {
 			result.rejectValue("cnfPass", "error.cnfPpass", "* Password Mismatch");
 		}
-		
-		if(theaterRepository.existsByEmail(theater.getEmail()) || theaterRepository.existsByEmail(theater.getEmail())) {
+
+		if (theaterRepository.existsByEmail(theater.getEmail())
+				|| theaterRepository.existsByEmail(theater.getEmail())) {
 			result.rejectValue("email", "error.email", "* Account is Already Exist by This Email");
 		}
-		
-		if(theaterRepository.existsByMobile(theater.getMobile()) || theaterRepository.existsByMobile(theater.getMobile())) {
+
+		if (theaterRepository.existsByMobile(theater.getMobile())
+				|| theaterRepository.existsByMobile(theater.getMobile())) {
 			result.rejectValue("mobile", "error.mobile", "* Account Alredy Exist by this Mobile");
 		}
-		
-		if(result.hasErrors()) {
+
+		if (result.hasErrors()) {
 			return "theater-signup";
-		}
-		else {
+		} else {
 			theater.setPass(AES.encrypt(theater.getPass(), "123"));
-			theater.setOtp(new Random().nextInt(100000,1000000));
+			theater.setOtp(new Random().nextInt(100000, 1000000));
 			emailSendingHelper.sendMailToTheater(theater);
 			theaterRepository.save(theater);
 			session.setAttribute("success", "OTP Sent Successfully");
@@ -70,24 +86,132 @@ public class TheaterController {
 			return "redirect:/theater/enter-otp";
 		}
 	}
-	
+
 	@GetMapping("/enter-otp")
 	public String enterOTP(ModelMap map) {
 		map.put("user", "theater");
 		return "enter-otp";
 	}
-	
+
 	@PostMapping("/verify-otp")
 	public String verifyOtp(@RequestParam int id, @RequestParam int otp, HttpSession session) {
 		Theater theater = theaterRepository.findById(id).orElseThrow();
-		if(theater.getOtp() == otp) {
+		if (theater.getOtp() == otp) {
 			theater.setVerified(true);
 			theaterRepository.save(theater);
 			session.setAttribute("success", "Account Created Successfully");
 			return "redirect:/login";
-		}else {
+		} else {
 			session.setAttribute("failure", "Invalid Otp Try Again..!");
 			return "redirect:/theater/enter-otp";
+		}
+	}
+
+	@GetMapping("/add-screen")
+	public String addScreen(HttpSession session) {
+		if (session.getAttribute("theater") != null) {
+			return "add-screen.html";
+		} else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
+			return "redirect:/login";
+		}
+	}
+
+	@PostMapping("/add-screen")
+	public String addMovie(Screen screen, HttpSession session) {
+		Theater theater = (Theater) session.getAttribute("theater");
+		if (theater != null) {
+			if (screenRepository.existsByName(screen.getName())) {
+				session.setAttribute("failure", "Screen Already Exists");
+				return "redirect:/";
+			} else {
+				// Creating all seats
+				List<Seat> seats = new ArrayList<>();
+				for (char i = 'A'; i < 'A' + screen.getRow(); i++) {
+					for (int j = 1; j <= screen.getColumn(); j++) {
+						Seat seat = new Seat();
+						seat.setSeatNumber(i + "" + j);
+						seats.add(seat);
+					}
+				}
+				screen.setSeats(seats);
+
+				List<Screen> screens = theater.getScreens();
+				screens.add(screen);
+
+				theaterRepository.save(theater);
+				System.out.println(screens + " This is screen");
+				session.setAttribute("theater", theaterRepository.findById(theater.getId()).orElseThrow());
+
+				session.setAttribute("success", "Screen and Seats Added Success");
+				return "redirect:/";
+			}
+		} else {
+			session.setAttribute("failure", "Invalid Session,Login Again");
+			return "redirect:/login";
+		}
+	}
+
+	@GetMapping("/add-show")
+	public String addShow(HttpSession session, ModelMap map) {
+		Theater theater = (Theater) session.getAttribute("theater");
+		if (theater != null) {
+			List<Screen> screens = theater.getScreens();
+			List<Movie> movies = movieRepository.findAll();
+
+			if (screens.isEmpty()) {
+				session.setAttribute("failure", "No Screens Available for Show");
+				return "redirect:/";
+			}
+			if (movies.isEmpty()) {
+				session.setAttribute("failure", "No Movies Available for Show");
+				return "redirect:/";
+			}
+
+			map.put("screens", screens);
+			map.put("movies", movies);
+			return "add-show";
+		} else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
+			return "redirect:/login";
+		}
+	}
+
+	@PostMapping("/add-show")
+	public String addShow(HttpSession session, Show show) {
+		Theater theater = (Theater) session.getAttribute("theater");
+
+		if (theater != null) {
+			show.setMovie(movieRepository.findById(show.getMovie().getId()).orElseThrow());
+			show.setScreen(screenRepository.findById(show.getScreen().getId()).orElseThrow());
+
+			showRepository.save(show);
+			session.setAttribute("success", "Show Added Success");
+			return "redirect:/";
+		} else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
+			return "redirect:/login";
+		}
+	}
+	
+	@GetMapping("/manage-show")
+	public String manageShow(HttpSession session, ModelMap map) {
+		Theater theater = (Theater) session.getAttribute("theater");
+		if(theater != null) {
+			List<Screen> screens = theater.getScreens();
+			List<Show> shows = showRepository.findByScreenIn(screens);
+			
+			if(shows.isEmpty()) {
+				session.setAttribute("failure", "No Show Added Yet");
+				return "redirect:/";
+			}else {
+				map.put("shows", shows);
+				return "manage-show";
+			}
+		}
+		else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
+			return "redirect:/login";
 		}
 	}
 }

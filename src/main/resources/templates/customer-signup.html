@@ -1,82 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-<th:block th:insert="~{fragments/header.html}"></th:block>
+
+<th:block th:insert="~{fragments/header}"></th:block>
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
 <link rel="stylesheet" type="text/css" href="/css/customer-signup.css">
-<title>Insert title here</title>
+<title>Customer Signup</title>
 </head>
 <body>
 	<th:block th:insert="~{fragments/navbar}"></th:block>
-	<h2>Customer Registration</h2>
-	<form class="row g-3" action="/customer/signup" method="post" th:object="${customer}">
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefault01" class="form-label">Name</label> 
-				<input type="text" name="name" class="form-control" id="validationDefault01" th:field="*{name}">
+	<div class="signup-container">
+		<h2 class="signup-title">Customer Signup</h2>
+		<form class="signup-form" action="/customer/signup" method="post"
+			th:object="${customer}" autocomplete="on">
+			<div class="form-group">
+				<label for="name" class="form-label">Name</label> <input type="text"
+					name="name" class="form-input" id="name" th:field="*{name}">
+				<span class="error-message" th:errors="*{name}"></span>
 			</div>
-			<span th:errors="*{name}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefault02" class="form-label">Mobile</label> 
-				<input type="tel" name="mobile" class="form-control" id="validationDefault02" th:field="*{mobile}">
+			<div class="form-group">
+				<label for="mobile" class="form-label">Mobile</label> <input
+					type="tel" name="mobile" class="form-input" id="mobile"
+					th:field="*{mobile}"> <span class="error-message"
+					th:errors="*{mobile}"></span>
 			</div>
-			<span th:errors="*{mobile}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefaultUsername" class="form-label">Email</label>
-				<input type="text" name="email" class="form-control" id="validationDefaultUsername" th:field="*{email}" aria-describedby="inputGroupPrepend2" >
+			<div class="form-group">
+				<label for="email" class="form-label">Email</label> <input
+					type="text" name="email" class="form-input" id="email"
+					th:field="*{email}"> <span class="error-message"
+					th:errors="*{email}"></span>
 			</div>
-			<span th:errors="*{email}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefault03" class="form-label">Password</label>
-				<input type="password" name="pass" class="form-control" id="validationDefault03" th:field="*{pass}" >
+			<div class="form-group">
+				<label for="password" class="form-label">Password</label> <input
+					type="password" name="pass" class="form-input" id="password"
+					th:field="*{pass}"> <span class="error-message"
+					th:errors="*{pass}"></span>
 			</div>
-			<span th:errors="*{pass}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefault04" class="form-label">Confirm Password</label> 
-				<input type="password" name="cnf_pass" class="form-control" id="validationDefault04" th:field="*{cnf_pass}" >
+			<div class="form-group">
+				<label for="confirm-password" class="form-label">Confirm
+					Password</label> <input type="password" name="cnf_pass" class="form-input"
+					id="confirm-password" th:field="*{cnf_pass}"> <span
+					class="error-message" th:errors="*{cnf_pass}"></span>
 			</div>
-			<span th:errors="*{cnf_pass}"></span>
-		</div>
-		<div class="form-check">
-			<label class="form-check-label" for="flexRadioDefault1">Gender</label>
-			<div class="form-radio">
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" value="male" id="male" th:field="*{gender}"> 
-					<label class="form-check-label" for="flexRadioDefault1">Male</label>
+			<div class="form-group gender-group">
+				<label class="form-label">Gender</label>
+				<div class="gender-options">
+					<div class="gender-option">
+						<input class="gender-input" type="radio" name="gender"
+							value="male" id="male" th:field="*{gender}"> <label
+							for="male">Male</label>
+					</div>
+					<div class="gender-option">
+						<input class="gender-input" type="radio" name="gender"
+							value="female" id="female" th:field="*{gender}"> <label
+							for="female">Female</label>
+					</div>
+					<div class="gender-option">
+						<input class="gender-input" type="radio" name="gender"
+							value="other" id="other" th:field="*{gender}"> <label
+							for="other">Other</label>
+					</div>
 				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" value="female" id="female" th:field="*{gender}" > 
-					<label class="form-check-label" for="flexRadioDefault1">Female</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="gender" value="other" id="other" th:field="*{gender}"> 
-					<label class="form-check-label" for="flexRadioDefault1">Other</label>
-				</div>
+				<span class="error-message" th:errors="*{gender}"></span>
 			</div>
-			<span th:errors="*{gender}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
-				<label for="validationDefault04" class="form-label">Date of Birth</label> 
-				<input type="date" name="dob" class="form-control" id="validationDefault04" th:field="*{dob}" >
+			<div class="form-group">
+				<label for="dob" class="form-label">Date of Birth</label> <input
+					type="date" name="dob" class="form-input" id="dob"
+					th:field="*{dob}"> <span class="error-message"
+					th:errors="*{dob}"></span>
 			</div>
-			<span th:errors="*{dob}"></span>
+			<div class="form-buttons">
+				<button class="btn btn-signup">Sign Up</button>
+				<button class="btn btn-reset" type="reset">Reset</button>
+			</div>
+		</form>
+		<div class="additional-link">
+			<label>If you Don't Have Theater Account ?</label> <a
+				href="/theater/signup">Click Here</a>
 		</div>
-		<div class="col-12 btn">
-			<button class="btn btn-primary">Sign Up</button>
-			<button class="btn btn-danger" type="reset">Reset</button>
-		</div>
-	</form>
-	<div class="add-link">
-		<label>If you Don't Have Theater Account ?</label> 
-		<a href="/theater/signup">Click Here</a>
 	</div>
 </body>
 </html>

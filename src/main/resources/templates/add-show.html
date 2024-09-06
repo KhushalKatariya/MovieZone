@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<th:block th:insert="~{fragments/header}"></th:block>
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+
+<title>MovieZone - Add Show</title>
+
+<style>
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+h1 {
+	color: #c41e3a;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.form-container {
+	background-color: #ffffff;
+	border-radius: 10px;
+	padding: 30px;
+	box-shadow: 0 0 20px rgba(196, 30, 58, 0.1);
+}
+
+.form-label {
+	display: block;
+	margin-bottom: 5px;
+	color: #8b0000;
+	font-weight: bold;
+}
+
+.form-select, .form-control {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 20px;
+	border: 1px solid #ffcccb;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
+
+.form-select:focus, .form-control:focus {
+	outline: none;
+	border-color: #c41e3a;
+	box-shadow: 0 0 5px rgba(196, 30, 58, 0.5);
+}
+
+.btn-primary {
+	background-color: #c41e3a;
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+	background-color: #8b0000;
+}
+
+.text-center {
+	text-align: center;
+}
+</style>
+
+</head>
+<body>
+	<th:block th:insert="~{fragments/navbar}"></th:block>
+	<main>
+		<div class="container">
+			<h1 class="text-center">Add Show</h1>
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="form-container">
+						<form action="/theater/add-show" method="post">
+							<div class="mb-3">
+								<label for="screen" class="form-label">Select a Screen:</label>
+								<select id="screen" name="screen.id" class="form-select">
+									<option disabled="disabled" selected="selected">Select
+										a Screen</option>
+									<option th:each="screen:${screens}" th:value="${screen.id}"
+										th:text="${screen.name}"></option>
+								</select>
+							</div>
+
+							<div class="mb-3">
+								<label for="movie" class="form-label">Select a Movie:</label> <select
+									id="movie" name="movie.id" class="form-select">
+									<option disabled="disabled" selected="selected">
+										Select a Movie</option>
+									<option th:each="movie:${movies}" th:value="${movie.id}"
+										th:text="${movie.name}"></option>
+								</select>
+							</div>
+
+							<div class="mb-3">
+								<label for="timing" class="form-label">Select Timing:</label> <select
+									id="timing" name="timing" class="form-select">
+									<option disabled="disabled" selected="selected">
+										Select Time</option>
+									<option value="1">10AM</option>
+									<option value="2">1PM</option>
+									<option value="3">4PM</option>
+									<option value="4">7PM</option>
+									<option value="5">10PM</option>
+								</select>
+							</div>
+
+							<div class="mb-3">
+								<label for="ticketPrice" class="form-label">Ticket Price
+									(in Rs.):</label> <input type="number" id="ticketPrice"
+									name="ticketPrice" class="form-control" />
+							</div>
+
+							<div class="text-center">
+								<button type="submit" class="btn btn-primary">Add Show
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

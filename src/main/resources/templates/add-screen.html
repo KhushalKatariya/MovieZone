@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<th:block th:insert="~{/fragments/header}"></th:block>
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+<title>Insert title here</title>
+
+<style type="text/css">
+.main-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(220, 20, 60, 0.1);
+    border: 1px solid #ffcccb;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-title {
+    color: #8b0000;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #dc143c;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ffcccb;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #dc143c;
+    box-shadow: 0 0 0 2px rgba(220, 20, 60, 0.25);
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.col {
+    flex: 1;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #dc143c;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #8b0000;
+}
+
+.d-grid {
+    display: grid;
+}
+
+.d-grid .btn {
+    width: 100%;
+}
+
+</style>
+</head>
+<body>
+	<th:block th:insert="~{/fragments/navbar}"></th:block>
+	<main>
+		<div class="main-container">
+			<div class="card shadow">
+				<div class="card-body">
+					<h2 class="card-title text-center">Add Screen</h2>
+					<form action="/theater/add-screen" method="post">
+						<div class="details">
+							<label for="name" class="form-label">Screen Name</label> <input
+								type="text" class="form-control" id="name" name="name" required />
+						</div>
+						<div class="seat-details">
+							<label class="form-label">Size</label>
+							<div class="row">
+								<div class="col">
+									<label for="row" class="form-label">Rows</label> <input
+										type="number" class="form-control" id="row" name="row"
+										required />
+								</div>
+								<div class="col">
+									<label for="column" class="form-label">Columns</label> <input
+										type="number" class="form-control" id="column" name="column"
+										required />
+								</div>
+							</div>
+						</div>
+						<div class="d-grid">
+							<button type="submit" class="btn btn-primary">Add Screen</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<th:block th:insert="~{fragments/header}"></th:block>
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+<title>MoviZone - Manage Shows</title>
+<style>
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+h1 {
+	color: #c41e3a;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.shows-list {
+	background-color: #ffebee;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.show-header, .show-item {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 15px;
+	border-bottom: 1px solid #ef5350;
+}
+
+.show-header {
+	background-color: #c41e3a;
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.show-item:nth-child(even) {
+	background-color: #ffcdd2;
+}
+
+.show-cell {
+	flex: 1;
+	padding: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.show-cell.movie {
+	flex: 2;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.show-cell img {
+	max-height: 100px;
+	max-width: 200px;
+	border-radius: 4px;
+	margin-top: 5px;
+}
+
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	text-transform: uppercase;
+	transition: background-color 0.3s ease, transform 0.1s ease;
+	text-decoration: none;
+	background-color: #c41e3a;
+	display: inline-block;
+	color: white;
+}
+
+.btn:hover{
+	background-color: #8b0000;
+	color: #696969;
+}
+
+.btn:active {
+	transform: translateY(1px);
+}
+
+.btn-primary {
+	background-color: #1e88e5;
+	color: white;
+}
+
+.btn-primary:hover {
+	background-color: #1565c0;
+}
+
+.btn-danger {
+	background-color: #d32f2f;
+	color: white;
+}
+
+.btn-danger:hover {
+	background-color: #b71c1c;
+}
+
+@media ( max-width : 768px) {
+	.show-header {
+		display: none;
+	}
+	.show-item {
+		flex-direction: column;
+	}
+	.show-cell {
+		flex-basis: 100%;
+		margin-bottom: 10px;
+	}
+	.show-cell:before {
+		content: attr(data-label);
+		font-weight: bold;
+		text-transform: uppercase;
+		margin-right: 5px;
+	}
+}
+</style>
+</head>
+<body>
+<th:block th:insert="~{fragments/navbar}"></th:block>
+	<main class="container">
+		<h1>Manage Shows</h1>
+		<div class="shows-list">
+			<div class="show-header">
+				<div class="show-cell">Screen Name</div>
+				<div class="show-cell">Timing</div>
+				<div class="show-cell movie">Movie</div>
+				<div class="show-cell">Ticket Price</div>
+				<div class="show-cell">Release Date</div>
+				<div class="show-cell">Booking</div>
+			</div>
+			<div class="show-item" th:each="show:${shows}">
+				<div class="show-cell" data-label="Screen Name"
+					th:text="${show.screen.name}"></div>
+				<div class="show-cell" data-label="Timing">
+					<span th:if="${show.timing==1}">Morning - 10AM</span> <span
+						th:if="${show.timing==2}">Afternoon - 1PM</span> <span
+						th:if="${show.timing==3}">Evening - 4PM</span> <span
+						th:if="${show.timing==4}">Evening - 7PM</span> <span
+						th:if="${show.timing==5}">Night - 10PM</span>
+				</div>
+				<div class="show-cell movie" data-label="Movie">
+					<span th:text="${show.movie.name}"></span> <img
+						th:src="${show.movie.moviePoster}" alt="Movie Poster" />
+				</div>
+				<div class="show-cell ticket-price" data-label="Ticket Price"
+					th:text="${show.ticketPrice}+'₹'"></div>
+				<div class="show-cell" data-label="Release Date"
+					th:text="${show.movie.releaseDate}"></div>
+				<div class="show-cell" data-label="Booking">
+					<a th:href="'/theatre/open-booking/'+${show.id}"
+						th:if="${!show.available}" class="btn">Open</a> <a
+						th:href="'/theatre/close-booking/'+${show.id}"
+						th:if="${show.available}" class="btn">Close</a>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

@@ -16,6 +16,7 @@
         <div class="theater-grid">
             <div th:each="theater : ${list}" class="theater-card">
                 <h2 th:text="${theater.name}"></h2>
+                <p><strong>Email:</strong> <span th:text="${theater.email}"></span></p>
                 <p><strong>Address:</strong> <span th:text="${theater.address}"></span></p>
                 <p><strong>License Number:</strong> <span th:text="${theater.licenceno}"></span></p>
                 <p><strong>Status:</strong> <span th:text="${theater.approved}" class="status"></span></p>
