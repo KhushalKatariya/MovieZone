@@ -23,4 +23,5 @@ public class Movie {
 	private String trailerLink;
 	private String moviePoster;
 	private LocalDate releaseDate;
+	private String category;
 }

@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:insert="~{fragments/header.html}"></th:block>
-<link rel="stylesheet" type="text/css" href="/css/customer-signup.css">
+<link rel="stylesheet" type="text/css" href="/css/theater-signup.css">
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
 <title>Insert title here</title>
 </head>
 <body>
 	<th:block th:insert="~{fragments/navbar}"></th:block>
-	<h2>Theater Registration</h2>
 	<form class="row g-3" action="/theater/signup" method="post" th:object="${theater}" autocomplete="on">
+	<h2>Theater Registration</h2>
 		<div class="col-md-4">
 			<div class="form-input">
 				<label for="validationDefault01" class="form-label">Name</label> 
@@ -46,26 +47,26 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-input">
-				<label for="validationDefault05" class="form-label">Address</label>
-				<textarea rows="3" cols="35" name="address" id="validationDefault05" th:field="*{address}"></textarea>
-			</div>
-			<span th:errors="*{address}"></span>
-		</div>
-		<div class="col-md-4">
-			<div class="form-input">
 				<label for="validationDefault06" class="form-label">Licence Number</label> 
 				<input type="text" name="licenceno" class="form-control" id="validationDefault06" th:field="*{licenceno}">
 			</div>
 			<span th:errors="*{licenceno}"></span>
 		</div>
+		<div class="col-md-4">
+			<div class="form-input">
+				<label for="validationDefault05" class="form-label">Address</label>
+				<textarea rows="3" cols="35" name="address" id="validationDefault05" th:field="*{address}"></textarea>
+			</div>
+			<span th:errors="*{address}"></span>
+		</div>
 		<div class="col-12 btn">
 			<button class="btn btn-primary">Sign Up</button>
 			<button class="btn btn-danger" type="reset">Reset</button>
 		</div>
-	</form>
 	<div class="add-link">
 		<label>If you Don't Have Customer Account ?</label> 
 		<a href="/customer/signup">Click Here</a>
 	</div>
+	</form>
 </body>
 </html>

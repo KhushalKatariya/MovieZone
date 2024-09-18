@@ -127,6 +127,36 @@ h1 {
 <body>
 <th:block th:insert="~{fragments/navbar}"></th:block>
 	<main class="container">
+		<div class="alert-container">
+	        <div
+	          class="alert alert-success alert-dismissible fade show text-center"
+	          th:if="${session.success}"
+	          role="alert"
+	        >
+	          <span th:text="${session.success}"></span>
+	          <button
+	            type="button"
+	            class="btn-close"
+	            data-bs-dismiss="alert"
+	            aria-label="Close"
+	          ></button>
+	        </div>
+	
+	        <div
+	          class="alert alert-danger alert-dismissible fade show text-center"
+	          th:if="${session.failure}"
+	          role="alert"
+	        >
+	          <span th:text="${session.failure}"></span>
+	          <button
+	            type="button"
+	            class="btn-close"
+	            data-bs-dismiss="alert"
+	            aria-label="Close"
+	          ></button>
+	        </div>
+	      </div>
+	      <th:block th:text="${@sessionMessageRemover.removeMessage()}"></th:block>
 		<h1>Manage Shows</h1>
 		<div class="shows-list">
 			<div class="show-header">
@@ -155,14 +185,27 @@ h1 {
 					th:text="${show.ticketPrice}+'₹'"></div>
 				<div class="show-cell" data-label="Release Date"
 					th:text="${show.movie.releaseDate}"></div>
+					
 				<div class="show-cell" data-label="Booking">
-					<a th:href="'/theatre/open-booking/'+${show.id}"
-						th:if="${!show.available}" class="btn">Open</a> <a
-						th:href="'/theatre/close-booking/'+${show.id}"
+					<a th:href="'/theater/open-booking/'+${show.id}"
+						th:if="${!show.available}" class="btn">Open</a> 
+						
+					<a th:href="'/theater/close-booking/'+${show.id}"
 						th:if="${show.available}" class="btn">Close</a>
 				</div>
 			</div>
 		</div>
 	</main>
+	
+	
+	<script type="text/javascript">
+	setTimeout(function () {
+        var alerts = document.querySelectorAll(".alert");
+        alerts.forEach(function (alert) {
+          var bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 1000);
+	</script>
 </body>
 </html>

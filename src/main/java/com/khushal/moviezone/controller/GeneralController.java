@@ -15,12 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.khushal.moviezone.dto.Customer;
 import com.khushal.moviezone.dto.Movie;
+import com.khushal.moviezone.dto.Show;
 import com.khushal.moviezone.dto.Theater;
 import com.khushal.moviezone.helper.AES;
 import com.khushal.moviezone.helper.CloudinaryHelper;
 import com.khushal.moviezone.helper.EmailSendingHelper;
 import com.khushal.moviezone.repository.CustomerRepository;
 import com.khushal.moviezone.repository.MovieRepository;
+import com.khushal.moviezone.repository.ShowRepository;
 import com.khushal.moviezone.repository.TheaterRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +36,8 @@ public class GeneralController {
 	TheaterRepository theaterRepository;
 	@Autowired
 	MovieRepository movieRepository;
+	@Autowired
+	ShowRepository showRepository;
 	
 	@Autowired
 	CloudinaryHelper cloudinaryHelper;
@@ -48,8 +52,9 @@ public class GeneralController {
 
 //	HOME PAGE
 	@GetMapping("/")
-	public String homePage() {
-		return "home";
+	public String loadMain(ModelMap map) {
+		map.put("movies", movieRepository.findAll());
+		return "home.html";
 	}
 
 //	LOGIN PAGE
@@ -233,13 +238,39 @@ public class GeneralController {
 		if(session.getAttribute("admin") != null) {
 			movie.setMoviePoster(cloudinaryHelper.saveMoviePosterToCloud(image));
 			movieRepository.save(movie);
-			System.out.println(movie);
 			session.setAttribute("success", "Movie Add Successfully");
 			return "redirect:/";
 		}
 		else {
 			session.setAttribute("failure", "Invalid Session, Login Again");
 			return "redirect:/login";
+		}
+	}
+	
+	@GetMapping("/movies")
+	public String loadAllMovies(HttpSession session,ModelMap map) {
+		List<Movie> movies = movieRepository.findAll();
+		if(movies.isEmpty()) {
+			session.setAttribute("failure", "Movies Are not Available");
+			return "redirect:/";
+		}
+		else {
+			map.put("movies", movies);
+			return "view-movies";
+		}
+	}
+	
+	@GetMapping("/shows/{id}")
+	public String loadAllShows(ModelMap map, HttpSession session, @PathVariable int id) {
+		Movie movie = movieRepository.findById(id).orElseThrow();
+		List<Show> shows = showRepository.findByMovieAndAvailableTrue(movie);
+		if(shows.isEmpty()) {
+			session.setAttribute("failure", "There are no show Running");
+			return "redirect:/";
+		}
+		else {
+			map.put("shows", shows);
+			return "view-shows";
 		}
 	}
 }

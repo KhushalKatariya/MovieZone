@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<th:block th:insert="~{fragments/header}"></th:block>
+<link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
+
+<title>MovieZone - View Shows</title>
+
+<style type="text/css">
+/* Main styles */
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+/* Header styles */
+h1.text-center {
+	color: #999;
+	margin-bottom: 30px;
+	font-size: 2.5rem;
+	transition: 0.3s ease;
+}
+
+h1.text-center:hover {
+	color: #c41e3a;
+}
+/* Card styles */
+.card {
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	margin-bottom: 20px;
+	transition: transform 0.3s ease;
+}
+
+.card:hover {
+	transform: translateY(-5px);
+}
+
+.show-title {
+	color: #c41e3a; /* Red color for show titles */
+	font-size: 1.5rem;
+	margin-top: 0;
+	margin-bottom: 15px;
+}
+
+/* Text styles */
+p {
+	margin-bottom: 10px;
+}
+
+strong {
+	color: #333;
+}
+
+/* Button styles */
+.btn-primary {
+	background-color: #c41e3a; /* Red color for buttons */
+	color: #fff;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 3px;
+	text-decoration: none;
+	display: inline-block;
+	transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+	background-color: #a01a2f; /* Darker red on hover */
+}
+
+/* Responsive grid */
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -10px;
+}
+
+.col-md-4 {
+	flex: 0 0 33.333333%;
+	max-width: 33.333333%;
+	padding: 10px;
+}
+
+/* Media query for smaller screens */
+@media ( max-width : 768px) {
+	.col-md-4 {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}
+</style>
+
+</head>
+<body>
+<th:block th:insert="~{fragments/navbar}"></th:block>
+	<main>
+		<div class="container">
+			<h1 class="text-center">Available Shows</h1>
+			<div class="row">
+				<div class="col-md-4 mb-4" th:each="show : ${shows}">
+					<div class="card">
+						<h2 class="show-title" th:text="${show.movie.name}"></h2>
+						<p>
+							<strong>Time:</strong> <span th:switch="${show.timing}"> <span
+								th:case="1">10:00 AM</span> 
+								<span th:case="2">1:00 PM</span> 
+								<span th:case="3">4:00 PM</span> 
+								<span th:case="4">7:00 PM</span> 
+								<span th:case="5">10:00 PM</span>
+							</span>
+						</p>
+						<p>
+							<strong>Theatre:</strong> <span
+								th:text="${show.screen.theater.name}"></span>
+						</p>
+						<p>
+							<strong>Screen:</strong> <span th:text="${show.screen.name}"></span>
+						</p>
+						<p>
+							<strong>Price:</strong> ₹<span th:text="${show.ticketPrice}"></span>
+						</p>
+						<a th:href="'/customer/book-show/' + ${show.id}"
+							class="btn btn-primary">Book Now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

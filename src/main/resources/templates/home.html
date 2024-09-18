@@ -7,67 +7,229 @@
 <link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
 <link rel="stylesheet" type="text/css" href="/css/slider.css">
 <!-- Link Swiper's CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <title>MovieZone - Home Page</title>
+
+<style type="text/css">
+	/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+/* Hero section */
+.bg-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/bg-image.avif') no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.content-wrapper {
+    width: 100%;
+}
+
+.hero-title {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #e0e0e0;
+}
+
+.btn-primary {
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 12px 30px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #f40612;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+}
+
+/* Section styles */
+section {
+    padding: 30px 0;
+}
+
+section h1 {
+    font-size: 2.5rem;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+#music-slider h1{
+	width: 30%;
+  	margin: 50px auto;
+}
+
+section h1:hover{
+    color: #f40612;
+}
+
+section h1::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #e50914;
+    margin: 20px auto 0;
+}
+
+/* Swiper styles */
+.swiper {
+    padding-bottom: 50px;
+}
+
+#recom-slider .swiper-slide {
+	width: 700px !important;
+}
+	
+.swiper-slide {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.swiper-slide:hover {
+    transform: translateY(-10px);
+}
+
+.poster-img img {
+    width: 100%;
+    height: 70vh;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.music-poster-img img,
+.laughter-poster-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.swiper-slide:hover img {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.movie-details,
+.music-details,
+.laughter-details {
+    padding: 20px;
+}
+
+#music-slider h2:hover, #music-slider h3:hover {
+    color: #e50914;
+    cursor: pointer;
+}
+
+.movie-details h2,
+.music-details h2,
+.laughter-details h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.movie-details h3,
+.music-details h3,
+.laughter-details h3 {
+    font-size: 0.9rem;
+    color: #b3b3b3;
+    font-weight: 400;
+}
+
+/* Swiper navigation */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #e50914;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    color: #f40612;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    section h1 {
+        font-size: 2rem;
+    }
+}
+</style>
+
 </head>
 <body>
 	<th:block th:insert="~{fragments/navbar}"></th:block>
 	<th:block th:insert="~{fragments/message}"></th:block>
 
 	<section>
+		<div class="bg-container">
+			<div class="content-wrapper">
+				<h1 class="hero-title">Welcome to MovieZone</h1>
+				<p class="hero-subtitle">Book your movie tickets with ease</p>
+				<a href="/movies" class="btn btn-primary btn-lg">Book Now</a>
+			</div>
+		</div>
+	</section>
+
+	<section id="recom-slider">
+		<h1 th:if="${!movies.isEmpty()}">Recommended Movies</h1>
 		<div class="swiper mySwiper">
 			<div class="swiper-wrapper">
-				<div class="swiper-slide">
+				<div class="swiper-slide" th:each="movie, iterStat : ${movies}" th:if="${movie.getCategory() == 'Movie'}">
 					<div class="poster">
 						<div class="poster-img">
 							<img alt=""
-								src="https://images.ottplay.com/images/big/stree-2-new-poster-1721216275.jpeg?impolicy=ottplay-20210210&width=1200&height=675&format=webp&quality=50" />
+								th:src="${movie.moviePoster}" />
 						</div>
 						<div class="movie-details">
-							<h2>Stree 2</h2>
-							<h3>Rajkumar Rao, Shardha Kapoor</h3>
-							<h3>Comedy, Horror</h3>
-						</div>
-					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="poster">
-						<div class="poster-img">
-							<img alt=""
-								src="https://d3pc1xvrcw35tl.cloudfront.net/sm/images/1260x945/akshay-kumar-movie-khel-khel-mein-motion-poster-out-taapsee-pannu-and-fardeen-khan_202407295920.jpg" />
-						</div>
-						<div class="movie-details">
-							<h2>Khel Khel Mein</h2>
-							<h3>Vani Kapoor</h3>
-							<h3>Comedy, Drama</h3>
-						</div>
-					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="poster">
-						<div class="poster-img">
-							<img alt=""
-								src="https://assets-in.bmscdn.com/iedb/movies/images/mobile/listing/xxlarge/vedaa-et00386426-1723550870.jpg" />
-						</div>
-						<div class="movie-details">
-							<h2>Vedaa</h2>
-							<h3>Jhon Abraheam</h3>
-							<h3>Action, Drama</h3>
-						</div>
-					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="poster">
-						<div class="poster-img">
-							<img alt=""
-								src="https://liveindia.tv/wp-content/uploads/2024/07/Big-B-1.jpg" />
-						</div>
-						<div class="movie-details">
-							<h2>Fakt Purusho Mate</h2>
-							<h3>Amitabh Bachhan</h3>
-							<h3>Comedy, Drama</h3>
+							<h2 th:text="${movie.name}"></h2>
+							<h3 th:text="${movie.cast}"></h3>
+							<h3 th:text="${movie.genre}"></h3>
 						</div>
 					</div>
 				</div>
@@ -77,26 +239,142 @@
 		</div>
 	</section>
 
-	<script
-		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+	<section id="music-slider">
+	<h1>Music Studio</h1>
+		<div class="swiper musicSwiper">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide music-slide">
+					<div class="music_poster">
+						<div class="music-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U2F0LCAxOSBPY3Q%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00394928-leqbwdbpxy-portrait.jpg" />
+						</div>
+						<div class="music-details">
+							<h2>Sunburn Arena Ft. Alan Walker - Mumbai</h2>
+							<h3>R2 Grounds, MMRDA: Mumbai</h3>
+							<h3>Concerts</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-button-next music-next"></div>
+			<div class="swiper-button-prev music-next"></div>
+		</div>
+	</section>
+	
+	<section id="music-slider" class="laughter-slider">
+	<h1>Laughter Therapy</h1>
+		<div class="swiper musicSwiper">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide music-slide laughter-slide">
+					<div class="music_poster">
+						<div class="laughter-poster-img">
+							<img alt=""
+								src="https://assets-in.bmscdn.com/discovery-catalog/events/tr:w-400,h-600,bg-CCCCCC:w-400.0,h-660.0,cm-pad_resize,bg-000000,fo-top:l-text,ie-U3VuLCAyOSBTZXA%3D,fs-29,co-FFFFFF,ly-612,lx-24,pa-8_0_0_0,l-end/et00329412-sfsdgyxjsp-portrait.jpg" />
+						</div>
+						<div class="laughter-details">
+							<h2>Kal Ki Chinta Nahi Karta ft. Ravi Gupta</h2>
+							<h3>MLR Convention Centre: Whitefield, Bengaluru</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-button-next music-next"></div>
+			<div class="swiper-button-prev music-next"></div>
+		</div>
+	</section>
+
+
+	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script type="text/javascript">
 		var swiper = new Swiper(".mySwiper", {
 			loop : true,
 			spaceBetween : 30,
 			slidesPerView : 3,
-			centeredSlides: true,
+			centeredSlides : true,
 			navigation : {
 				nextEl : ".swiper-button-next",
 				prevEl : ".swiper-button-prev",
 			},
 			effect : "coverflow",
-			coverflowEffect: {
-		        rotate: 0,
-		        stretch: 0,
-		        depth: 100,
-		        modifier: 1,
-		        slideShadows: false,
-		      },
+			coverflowEffect : {
+				rotate : 0,
+				stretch : 0,
+				depth : 100,
+				modifier : 1,
+				slideShadows : false,
+			},
+		});
+
+		var musicSwiper = new Swiper(".musicSwiper", {
+			slidesPerView : 3,
+			spaceBetween : 30,
+			loop: true,
+			freeMode : true,
+			navigation : {
+				nextEl : ".swiper-button-next",
+				prevEl : ".swiper-button-prev",
+			},
 		});
 	</script>
 </body>
