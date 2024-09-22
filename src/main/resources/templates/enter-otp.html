@@ -4,8 +4,10 @@
     <th:block th:insert="~{fragments/header.html}"></th:block>
     <title>OTP Page</title>
     <link rel="stylesheet" href="/css/otp.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-foot.css">
 </head>
 <body>
+<th:block th:insert="~{/fragments/navbar}"></th:block>
     <div class="container">
         <th:block th:insert="~{fragments/message.html}"></th:block>
         <h1>OTP Verification</h1>

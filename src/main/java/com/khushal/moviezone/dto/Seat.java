@@ -14,5 +14,10 @@ public class Seat {
 	private int id;
 	private String seatNumber;
 	private boolean occupied;
+	@Override
+	public String toString() {
+		return " seatNumber = " + seatNumber;
+	}
 	
+		
 }

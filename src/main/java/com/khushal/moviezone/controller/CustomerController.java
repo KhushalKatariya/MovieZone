@@ -1,6 +1,8 @@
 package com.khushal.moviezone.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 
@@ -15,6 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import com.khushal.moviezone.dto.Booking;
 import com.khushal.moviezone.dto.Customer;
@@ -37,20 +44,19 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
-	
+
 	@Autowired
 	Customer customer;
-	
 
 	@Value("${razorpay.key}")
 	private String key;
 
 	@Value("${razorpay.secret}")
 	private String secret;
-	
+
 	@Autowired
 	EmailSendingHelper emailSendingHelper;
-	
+
 	@Autowired
 	CustomerRepository customerRepository;
 	@Autowired
@@ -61,36 +67,37 @@ public class CustomerController {
 	SeatRepository seatRepository;
 	@Autowired
 	BookingRepository bookingRepository;
-	
+
 //	FOR CUSTOMER REGISTRATION
-	
+
 	@GetMapping("/signup")
 	public String customerRegistration(ModelMap map) {
 		map.put("customer", customer);
 		return "customer-signup";
 	}
-	
+
 	@PostMapping("/signup")
-	public String createRegistration(@Valid Customer customer , BindingResult result, HttpSession session ) {
-		if(!customer.getPass().equals(customer.getCnf_pass())) {
-			System.out.println(customer.getPass()+" , cnfpass"+customer.getCnf_pass());
+	public String createRegistration(@Valid Customer customer, BindingResult result, HttpSession session) {
+		if (!customer.getPass().equals(customer.getCnf_pass())) {
+			System.out.println(customer.getPass() + " , cnfpass" + customer.getCnf_pass());
 			result.rejectValue("cnf_pass", "error.cnf_pass", "* Password Mismatch");
 		}
-		
-		if(customerRepository.existsByEmail(customer.getEmail()) || theaterRepository.existsByEmail(customer.getEmail())) {
+
+		if (customerRepository.existsByEmail(customer.getEmail())
+				|| theaterRepository.existsByEmail(customer.getEmail())) {
 			result.rejectValue("email", "error.email", "* Account is Already Exist by This Email");
 		}
-		
-		if(customerRepository.existsByMobile(customer.getMobile()) || theaterRepository.existsByMobile(customer.getMobile())) {
+
+		if (customerRepository.existsByMobile(customer.getMobile())
+				|| theaterRepository.existsByMobile(customer.getMobile())) {
 			result.rejectValue("mobile", "error.mobile", "* Account Alredy Exist by this Mobile");
 		}
-		
-		if(result.hasErrors()) {
+
+		if (result.hasErrors()) {
 			return "customer-signup";
-		}
-		else {
+		} else {
 			customer.setPass(AES.encrypt(customer.getPass(), "123"));
-			customer.setOtp(new Random().nextInt(100000,1000000));
+			customer.setOtp(new Random().nextInt(100000, 1000000));
 			emailSendingHelper.sendMailToCustomer(customer);
 			customerRepository.save(customer);
 			session.setAttribute("success", "OTP Sent Successfully");
@@ -98,27 +105,27 @@ public class CustomerController {
 			return "redirect:/customer/enter-otp";
 		}
 	}
-	
+
 	@GetMapping("/enter-otp")
 	public String enterOTP(ModelMap map) {
 		map.put("user", "customer");
 		return "enter-otp";
 	}
-	
+
 	@PostMapping("/verify-otp")
 	public String verifyOtp(@RequestParam int id, @RequestParam int otp, HttpSession session) {
 		Customer customer = customerRepository.findById(id).orElseThrow();
-		if(customer.getOtp() == otp) {
+		if (customer.getOtp() == otp) {
 			customer.setVerified(true);
 			customerRepository.save(customer);
 			session.setAttribute("success", "Account Created Successfully");
 			return "redirect:/login";
-		}else {
+		} else {
 			session.setAttribute("failure", "Invalid Otp Try Again..!");
 			return "redirect:/customer/enter-otp";
 		}
 	}
-	
+
 	@GetMapping("/book-show/{showId}")
 	public String bookShow(@PathVariable int showId, ModelMap map) {
 		Show show = showRepository.findById(showId).orElseThrow();
@@ -127,7 +134,7 @@ public class CustomerController {
 		map.put("seats", seats);
 		return "seat-selection";
 	}
-	
+
 	@PostMapping("/book-seats")
 	public String bookSeats(@RequestParam int showId, @RequestParam List<String> selectedSeats, HttpSession session,
 			ModelMap map) throws RazorpayException {
@@ -157,7 +164,7 @@ public class CustomerController {
 			booking.setSeatNumbers(seats);
 			booking.setBookingTime(LocalDateTime.now());
 			bookingRepository.save(booking);
-			System.out.println("===============> "+booking.getId());
+			System.out.println("===============> " + booking.getId());
 			List<Booking> list = customer.getBookingList();
 			list.add(booking);
 			customer.setBookingList(list);
@@ -181,6 +188,65 @@ public class CustomerController {
 			return "booking-confirmation-page.html";
 		} else {
 			session.setAttribute("failure", "First Login To Book Tickets");
+			return "redirect:/login";
+		}
+	}
+
+	@PostMapping("/confirm-booking/{bookingId}")
+	public String confirmBooking(@PathVariable int bookingId, @RequestParam String razorpay_payment_id,
+			@RequestParam String razorpay_order_id, @RequestParam String razorpay_signature, HttpSession session, ModelMap model) {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if(customer != null) {	
+			Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+			booking.setBooked(true);
+			booking.setPymentId(razorpay_payment_id);
+			bookingRepository.save(booking);
+			
+			emailSendingHelper.sendBookingConfirmation(customer, booking);
+			
+			String qrCodeData = "Booking ID: " + bookingId + ", Customer: " + customer.getName();
+			String qrCodeImage = generateQRCode(qrCodeData);
+			model.put("qrCodeImage", qrCodeImage);
+			model.put("booking", booking);
+			session.setAttribute("success", "Booking confirmed successfully!");
+			return "booking-details";
+		}else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
+			return "redirect:/login";
+		}
+	}
+	
+	private String generateQRCode(String qrCodeData) {
+		try {
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeData, BarcodeFormat.QR_CODE, 200, 200);
+
+			ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+			MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+			byte[] pngData = pngOutputStream.toByteArray();
+
+			return Base64.getEncoder().encodeToString(pngData);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@GetMapping("/history")
+	public String loadHistory(HttpSession session, ModelMap map) {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if(customer != null) {
+			if(bookingRepository.findAll().isEmpty()) {
+				session.setAttribute("failure", "There is no Booking");
+				return "redirect:/";
+			}else {			
+				map.put("history", bookingRepository.findAll());
+//				map.addAttribute("history", bookingList);
+				return "history";
+			}
+		}
+		else {
+			session.setAttribute("failure", "Invalid Session, Login Again");
 			return "redirect:/login";
 		}
 	}
